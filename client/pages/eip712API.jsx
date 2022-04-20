@@ -1,5 +1,3 @@
-import Head from 'next/head'
-
 import { useState, useEffect } from 'react'
 import { ethers } from 'ethers'
 import { networks } from '../utils/networks'
@@ -229,15 +227,11 @@ const mint = () => {
 
           let { r, s, v } = getSignatureParameters(signature)
 
-          sendSignedTransaction(userAddress, functionSignature, r, s, v)
+          sendTransaction(userAddress, functionSignature, r, s, v)
         } else {
           console.log(gasless)
           const tx = await contract.createEternalNFT()
           const txn = await tx.wait()
-
-          const tokenId = txn.events[0].args.tokenId.toString()
-          console.log(tokenId)
-          getMintedNFT(tokenId)
         }
       } else {
         console.log("Ethereum object doesn't exist!")
@@ -272,21 +266,29 @@ const mint = () => {
     }
   }
 
-  const sendSignedTransaction = async (userAddress, functionData, r, s, v) => {
+  const sendTransaction = async (userAddress, functionData, r, s, v) => {
     try {
-      let tx = await contract.executeMetaTransaction(
-        userAddress,
-        functionData,
-        r,
-        s,
-        v,
-        { gasLimit: 1000000 }
-      )
-
-      const txData = await tx.wait(1)
-      setNftTx(tx.hash)
-      console.log('Transaction hash : ', tx.hash)
-      console.log(tx)
+      fetch('https://api.biconomy.io/api/v2/meta-tx/native', {
+        method: 'POST',
+        headers: {
+          'x-api-key': 'To_rQOQlG.123aa12d-4e94-4ae3-bdcd-c6267d1b6b74',
+          'Content-Type': 'application/json;charset=utf-8',
+        },
+        body: JSON.stringify({
+          to: nftContractAddress,
+          apiId: 'ac69688a-a21a-4130-ab18-6b2097e7f215',
+          params: [userAddress, functionData, r, s, v],
+          from: userAddress,
+        }),
+      })
+        .then((response) => response.json())
+        .then(async function (result) {
+          let receipt = await ethersProvider.waitForTransaction(result.txHash)
+          setNftTx(result.txHash)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     } catch (error) {
       console.log(error)
     }
@@ -300,21 +302,18 @@ const mint = () => {
   useEffect(() => {
     checkIfWalletIsConnected()
 
-    if (currentAccount !== '' && network === 'Kovan') {
-      console.log('init')
-      init()
+    if (currentAccount !== '') {
+      if (network === 'Kovan') {
+        init()
+      } else {
+        switchNetwork()
+      }
     }
   }, [currentAccount, network])
 
   return (
     <div className="flex min-h-screen flex-col items-center bg-gray-200 pt-12 text-gray-900">
-      <Head>
-        <title>Gasless NFT</title>
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      </Head>
-
       <h2 className="mt-12 text-3xl font-bold">Mint your Character!</h2>
-
       {currentAccount === '' ? (
         <button
           className="mb-10 mt-20 rounded-lg bg-black py-3 px-12 text-2xl font-bold text-gray-300 shadow-lg transition duration-500 ease-in-out hover:scale-105"
