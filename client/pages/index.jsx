@@ -8,11 +8,10 @@ import { networks } from '../utils/networks'
 import NFT from '../utils/EternalNFT.json'
 
 import { Biconomy } from '@biconomy/mexa'
-import { useWalletProvider } from '../context/WalletProvider'
 
 const nftContractAddress = '0x954961aAa708423828db1047c320521d25EC31cC'
 
-// this changes for all EIP712Sign variations of custom approach
+// Initialize Constants
 const domainType = [
   { name: 'name', type: 'string' },
   { name: 'version', type: 'string' },
@@ -48,13 +47,10 @@ const mint = () => {
   const [nftLoading, setNftLoading] = useState(null)
   const [initLoading, setInitLoading] = useState(null)
 
-  
-
   const init = async () => {
     if (typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) {
       setInitLoading(0)
 
-      // We're creating biconomy provider linked to your network of choice where your contract is deployed
       biconomy = new Biconomy(window.ethereum, {
         apiKey: 'To_rQOQlG.123aa12d-4e94-4ae3-bdcd-c6267d1b6b74',
         debug: true,
@@ -74,17 +70,17 @@ const mint = () => {
 
       biconomy
         .onEvent(biconomy.READY, async () => {
-          // Initialize your dapp here like getting user accounts etc
+          // Initialize your dapp here like getting user accounts, contracts etc
           contract = new ethers.Contract(
             nftContractAddress,
             NFT.abi,
             biconomy.getSignerByAddress(userAddress)
           )
 
-          // Handle error while initializing mexa
           contractInterface = new ethers.utils.Interface(NFT.abi)
           setInitLoading(1)
         })
+        // Handle error while initializing mexa
         .onEvent(biconomy.ERROR, (error, message) => {
           console.log(message)
           console.log(error)
@@ -212,6 +208,10 @@ const mint = () => {
           message.from = userAddress
           message.functionSignature = functionSignature
 
+          /*
+            Its important to use eth_signTypedData_v3 and not v4 to get EIP712 signature 
+            because we have used salt in domain data instead of chainId
+          */
           const dataToSign = JSON.stringify({
             types: {
               EIP712Domain: domainType,
@@ -222,10 +222,7 @@ const mint = () => {
             message: message,
           })
 
-          /*
-            Its important to use eth_signTypedData_v3 and not v4 to get EIP712 signature 
-            because we have used salt in domain data instead of chainId
-          */
+          // Get the EIP-712 Signature and send the transaction
           let signature = await walletProvider.send('eth_signTypedData_v3', [
             userAddress,
             dataToSign,
@@ -326,21 +323,33 @@ const mint = () => {
   useEffect(() => {
     checkIfWalletIsConnected()
 
-    if (currentAccount !== '' && network === 'Kovan') {
-      console.log('init')
-      init()
+    if (currentAccount !== '') {
+      if (network === 'Kovan') {
+        init()
+      } else {
+        switchNetwork()
+      }
     }
   }, [currentAccount, network])
 
   return (
-    <div className="flex min-h-screen flex-col items-center bg-gray-200 pt-12 text-gray-900">
+    <div className="flex min-h-screen flex-col items-center bg-gray-200 pt-32 text-gray-900">
       <Head>
         <title>Gasless NFT</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-
+      <div className="trasition transition duration-500 ease-in-out hover:rotate-180 hover:scale-105">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="60"
+          height="60"
+          fill="currentColor"
+          viewBox="0 0 16 16"
+        >
+          <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5 8.186 1.113zM15 4.239l-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z" />
+        </svg>
+      </div>
       <h2 className="mt-12 text-3xl font-bold">Mint your Character!</h2>
-
       {currentAccount === '' ? (
         <button
           className="mb-10 mt-20 rounded-lg bg-black py-3 px-12 text-2xl font-bold text-gray-300 shadow-lg transition duration-500 ease-in-out hover:scale-105"
