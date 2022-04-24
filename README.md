@@ -15,7 +15,7 @@ https://gasless-nft.vercel.app/
 
 ## Deployed Contract Address
 
-`0x954961aAa708423828db1047c320521d25EC31cC`
+`0x372d3e535fb9FCABF44df1fEBeb7d8749e189512`
 
 ## Clone, Install and Build steps
 

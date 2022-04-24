@@ -259,7 +259,6 @@ const getContractAddresses = async (networkId) => {
   const apiInfo = `${helperAttributes.baseURL}/api/v2/meta-tx/systemInfo?networkId=${networkId}`
   const response = await fetch(apiInfo)
   const systemInfo = await response.json()
-  console.log('Response JSON ' + JSON.stringify(systemInfo))
   contractAddresses.biconomyForwarderAddress =
     systemInfo.biconomyForwarderAddress
   return contractAddresses
