@@ -7,8 +7,8 @@ const Intro = () => {
         <div>1. Select an Approach</div>
         <div>2. Connect Your Wallet</div>
         <div>
-          3. Click on the Mint NFT button to Mint an NFT using gasless Meta
-          Transaction using Biconomy
+          3. Click on the Mint NFT button. An NFT will be minted using gasless
+          Meta Transaction with Biconomy
         </div>
       </div>
       <div className="mt-10 flex flex-col gap-y-2 text-lg">
@@ -17,7 +17,7 @@ const Intro = () => {
           <a
             href="https://github.com/bcnmy/gasless-minting-demo"
             target="_blank"
-            className="text-blue-600"
+            className="text-blue-600 underline-offset-2 hover:underline"
           >
             bcnmy/gasless-minting-demo
           </a>
