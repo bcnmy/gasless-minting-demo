@@ -11,11 +11,9 @@
 
 ## Deployed Website url
 
-https://gasless-nft.vercel.app/
-
 ## Deployed Contract Address
 
-`0x372d3e535fb9FCABF44df1fEBeb7d8749e189512`
+`0x954961aAa708423828db1047c320521d25EC31cC`
 
 ## Clone, Install and Build steps
 
@@ -32,8 +30,8 @@ https://gasless-nft.vercel.app/
 1. Clone the project repository on your local machine
 
 ```
- git clone https://github.com/AbhinavXT/Gasless-NFT.git
- cd Gasless-NFT
+ git clone https://github.com/bcnmy/gasless-minting-demo.git
+ cd gasless-minting-demo
 ```
 
 2. Installing dependencies
