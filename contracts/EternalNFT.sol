@@ -10,7 +10,6 @@ import "hardhat/console.sol";
 import "./EIP712MetaTransaction.sol";
 
 /// @title EternalNFT
-/// @author Abhinav Pathak
 /// @notice This contract is used to create an NFT token that can be minted and owned by anyone.
 /// @dev Inherits from ERC721URIStorage contract for ERC-721 token functionality.
 /// @dev Inherits from EIP712MetaTransaction contract for EIP-712 type signature Meta Transaction functionality.

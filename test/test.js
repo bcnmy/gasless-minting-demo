@@ -3,7 +3,6 @@ const sigUtil = require("eth-sig-util")
 
 require("dotenv").config()
 
-const EIP712MetaTransaction = require("../artifacts/contracts/EIP712MetaTransaction.sol/EIP712MetaTransaction.json")
 const NFT = require("../artifacts/contracts/EternalNFT.sol/EternalNFT.json")
 
 let wallet = new ethers.Wallet.createRandom()
@@ -84,8 +83,6 @@ describe("NFT Contract", async () => {
 		)
 		await metaTransactionContract.deployed()
 
-		const [owner, _] = await ethers.getSigners()
-
 		domainData = {
 			name: "EternalNFT",
 			version: "1",
@@ -113,7 +110,7 @@ describe("NFT Contract", async () => {
 			v
 		)
 
-		const txData = await tx.wait(1)
+		await tx.wait(1)
 
 		console.log("Transaction hash : ", tx.hash)
 

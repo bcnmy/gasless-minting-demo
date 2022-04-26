@@ -1,9 +1,11 @@
 const main = async () => {
+	// Deploying EternalNFT contract
 	const nftContractFactory = await ethers.getContractFactory("EternalNFT")
 	const nftContract = await nftContractFactory.deploy()
 	await nftContract.deployed()
 	console.log("Custom approach Contract deployed to:", nftContract.address)
 
+	// Deploying EternalNFT2771 Contract
 	const nftContractFactory2771 = await ethers.getContractFactory(
 		"EternalNFT2771"
 	)
