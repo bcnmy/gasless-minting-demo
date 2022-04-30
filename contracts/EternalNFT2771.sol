@@ -135,10 +135,14 @@ contract EternalNFT2771 is ERC2771Context, ERC721URIStorage {
         return newItemId;
     }
 
+    /// @notice Overrides _msgSender() function from Context.sol
+    /// @return address The current execution context's sender address
     function _msgSender() internal view override(Context, ERC2771Context) returns (address){
         return ERC2771Context._msgSender();
     }
 
+    /// @notice Overrides _msgData() function from Context.sol
+    /// @return address The current execution context's data
     function _msgData() internal view override(Context, ERC2771Context) returns (bytes calldata){
         return ERC2771Context._msgData();
     }
